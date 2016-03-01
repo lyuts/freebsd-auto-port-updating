@@ -1,2 +1,9 @@
-# freebsd-auto-port-updating
-Project idea: Automated FreeBSD port updating infrastructure
+# Automated FreeBSD port updating infrastructure
+## Introduction
+
+## Problem
+
+## Solution
+
+### Components
+
