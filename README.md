@@ -18,9 +18,29 @@ The process of updating a port consists of:
 * preparing a patch.
 * submitting a bug (aka PR/issue) to [bugzilla](https://bugs.freebsd.org/bugzilla).
 * reviewing submitted patch by someone on the ports team.
-* commiting a patch.
+* committing a patch.
+
+Nearly all steps, except preparing and committing a patch, are time consuming and can span
+over a long period of time. There are multiple reasons to that. But as a fact, by the time
+a patch is committed, or ready to be committed, a newer version may be available. While
+this may not be a widespread issue with stable releases of ported software, the problem is
+extremely relevant for snapshot/nightly releases.
 
 ## Solution
+Most of the steps in the port updating process can be automated. Which will significantly
+reduce the time required to get latest version of a ported software into ports tree.
+Obviously, not all port updates can be automated, and some updates will actually require
+person's intervention. Minor version updates, on the other hand, in general require no
+extra effort and are probably limited to just bumping the version number and updating
+distinfo file. Just automating updates to minor version will significantly increase the
+speed of getting newer versions (even just minor) and reduce the churn on the ports team
+members. More than that, the claim to make is that getting minor version updates faster by
+automating them is more important than any other updates. The reason for that is because
+minor versions tend to have bug fixes and security updates. On a plus side, they shouldn't
+introduce that many obstacles in their automation as they generally maintain backwards
+compatability by keeping existing API/ABI.
 
 ### Components
+
+### Candidates
 
