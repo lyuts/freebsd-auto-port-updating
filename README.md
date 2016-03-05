@@ -62,7 +62,9 @@ scratch. There are already components that can be reused with some adapting if n
 proven they cannot be reused, they can be used as a reference implementation.
 
 #### New version availability detector
-[portscout](portscout.freebsd.org)
+[portscout](portscout.freebsd.org). This probably works for minor version updates.
+Nightlies/snapshots should be determined by latest head (custom branch?) of the upstream
+repo.
 
 #### Port patcher
 At this point, i'm not aware of anything that would be doing automated patching. This
