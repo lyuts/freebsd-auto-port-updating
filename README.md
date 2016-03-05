@@ -34,11 +34,17 @@ person's intervention. Minor version updates, on the other hand, in general requ
 extra effort and are probably limited to just bumping the version number and updating
 distinfo file. Just automating updates to minor version will significantly increase the
 speed of getting newer versions (even just minor) and reduce the churn on the ports team
-members. More than that, the claim to make is that getting minor version updates faster by
+members. More than that, the claim is that getting minor version updates faster by
 automating them is more important than any other updates. The reason for that is because
 minor versions tend to have bug fixes and security updates. On a plus side, they shouldn't
 introduce that many obstacles in their automation as they generally maintain backwards
 compatability by keeping existing API/ABI.
+Getting nightlies/snapshots faster into ports is also important for developers. For
+example, you are writing software in rust and you want to ensure it builds on FreeBSD with
+the latest upstream version, or, you are a user who wants to try firefox with the latest
+and improved electrolysis and help test it, or you are a developer contributing to some
+project. Replace rust/firefox with another project and corresponding features and you'll
+get much more use cases.
 
 ### Components
 
