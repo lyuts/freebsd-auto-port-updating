@@ -51,12 +51,43 @@ The most naive design of such an infrastructure contains of the following compon
 - new version availability detector.
 - port patcher.
 - consumer resolver.
-- test build initiater.
 - test build executor.
 - pr submitter (optional).
 - patch commiter.
+- coordinator.
 
 ### Candidates
+The hunch is that this automated updating infrastructure doesn't have to be built from
+scratch. There are already components that can be reused with some adapting if needed. If
+proven they cannot be reused, they can be used as a reference implementation.
+
+#### New version availability detector
+[portscout](portscout.freebsd.org)
+
+#### Port patcher
+At this point, i'm not aware of anything that would be doing automated patching. This
+component will have to be implemented.
+
+#### Consumer resolver.
+Once a port has been patched, it needs to be tested by building the port and its
+consumers. [freshports.org](freshports.org) seems to be able to list all ports that
+require a given port.
+
+#### Test build executor.
+[poudriere](https://github.com/freebsd/poudriere)
+
+#### PR submitter (optional).
+This will have to be implemented, if the team wants auto updates to be tracked in
+[bugzilla](bugs.freebsd.org/bugzilla).
+
+#### Patch commiter.
+Seems to be straightforward to implement. Retrieve a patch, svn commit.
+
+#### Coordinator.
+Coordinating entity that will invoke port patcher when a new port version is available
+(signaled by or polled from portscout), will trigger consumer resolution and will invoke a
+test build after that. On a successfull test build, this will proceed to commiting a
+patch.
 
 ## Open questions
 There is a list of questions that will have to be addressed before implementing the
@@ -64,3 +95,5 @@ infrastructure:
 * How to manage dependent updates? For example, updating port A to version N, requires
   updating port B to version M first. (Note: might not be a problem with minor version
   updates)
+* Develop a better validation mechanism, which will not be limited to just ensuring the
+  port builds.
