@@ -47,6 +47,20 @@ project. Replace rust/firefox with another project and corresponding features an
 get much more use cases.
 
 ### Components
+The most naive design of such an infrastructure contains of the following components:
+- new version availability detector.
+- port patcher.
+- consumer resolver.
+- test build initiater.
+- test build executor.
+- pr submitter (optional).
+- patch commiter.
 
 ### Candidates
 
+## Open questions
+There is a list of questions that will have to be addressed before implementing the
+infrastructure:
+* How to manage dependent updates? For example, updating port A to version N, requires
+  updating port B to version M first. (Note: might not be a problem with minor version
+  updates)
