@@ -14,7 +14,8 @@ var_name = /^[A-Z0-9a-z_]+/ ;
 
 assignment = '=' | '+=' | '?=' ;
 
-var_value = ' \\'.{?/\s*[A-Za-z":0-9_.@'${}/-]+/?} ;
+#var_value = '\\\n'.{ /[^\\]*/ } ;
+var_value = '\\\n'.{?/\s*[A-Za-z":0-9_.@'${}/-]+/?} ;
 
 target_name = /[.\-A-Za-z]+/ ;
 
@@ -23,4 +24,3 @@ newline = '\n' ;
 
 target_body = '\n'.{ /^\s+.+/ };
 
-Version = /[0-9]+/;
