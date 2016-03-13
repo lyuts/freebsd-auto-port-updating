@@ -12,10 +12,10 @@ target_declaration = target_name colon '\n'.{ target_body };
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
-assignment = '=' | '+=' | '?=' ;
+assignment = '=' | '+=' | '?=' | '!=' ;
 
-#var_value = '\\\n'.{ /[^\\]*/ } ;
-var_value = '\\\n'.{?/\s*[A-Za-z":0-9_.@'${}/-]+/?} ;
+#var_value = '\\\n'.{ /!(\\)*/ } ;
+var_value = '\\\n'.{?/\s*[ A-Za-z":0-9_.@,=|%'${}/-]+/?} ;
 
 target_name = /[.\-A-Za-z]+/ ;
 
