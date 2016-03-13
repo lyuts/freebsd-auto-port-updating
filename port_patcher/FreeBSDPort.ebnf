@@ -1,0 +1,26 @@
+makefile = { declaration | comment }* ;
+
+NEWLINE = '\n' ;
+
+comment = /^#.*$/ ;
+
+declaration = var_declaration | target_declaration;
+
+var_declaration = var_name assignment var_value;
+
+target_declaration = target_name colon '\n'.{ target_body };
+
+var_name = /^[A-Z0-9a-z_]+/ ;
+
+assignment = '=' | '+=' | '?=' ;
+
+var_value = ' \\'.{?/\s*[A-Za-z":0-9_.@'${}/-]+/?} ;
+
+target_name = /[.\-A-Za-z]+/ ;
+
+colon = ':' ;
+newline = '\n' ;
+
+target_body = '\n'.{ /^\s+.+/ };
+
+Version = /[0-9]+/;
