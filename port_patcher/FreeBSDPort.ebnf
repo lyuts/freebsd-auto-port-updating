@@ -1,39 +1,42 @@
-makefile = { EMPTY_LINE | declaration | COMMENT | if_block | include_stmt }* ;
+MAKEFILE = { DECLARATION | COMMENT | IF_BLOCK | INCLUDE_STMT | EMPTY_LINE }* ;
 
-EMPTY_LINE = /^\s*$/ ;
+EMPTY_LINE = /\s*$\n/ ;
 #NEWLINE = '\n' ;
 
-COMMENT = /\s*#.*$/ ;
+COMMENT = /[^\n\S]*#.*$\n/ ;
 
-declaration = var_declaration | target_declaration;
+DECLARATION = VAR_DECLARATION | TARGET_DECLARATION;
 
-var_declaration = var_name assignment var_value;
+VAR_DECLARATION = var_name { /\s/ }* assignment { /\s/ }* var_value;
 
-target_declaration = target_name ':' '\n'.{ target_body };
+TARGET_DECLARATION = target_name ':' TARGET_BODY EMPTY_LINE;
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
 assignment = '=' | '+=' | '?=' | '!=' | ':=' ;
 
 #var_value = '\\\n'.{ /!(\\)*/ } ;
-var_value = '\\\n'.{?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/?} ;
+#var_value = { ?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/? [ '\\' ]}* ;
+var_value = '\\'.{ ?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/? } ;
 
 target_name = /^[a-z-]+/ ;
 
 #newline = '\n' ;
 
-#target_body = { COMMENT }* ;
-target_body = { shell_cmd | COMMENT }* ;
+#TARGET_BODY = { COMMENT }* ;
+TARGET_BODY = { /\s+/ SHELL_CMD | COMMENT }+ ;
 
-shell_cmd = [ '@' ]  { var_declaration | /.*/ };
-if_block = '.if' if_condition if_body '.endif';
+#SHELL_CMD = [ '@' ]  { VAR_DECLARATION };
+SHELL_CMD = [ '@' ]  { VAR_DECLARATION | /\S+$/ } [ '\\' ] ;
 
-if_condition = ( bool_op ).{ subcondition | var_declaration };
+IF_BLOCK = '.if' if_condition if_body '.endif';
+
+if_condition = ( bool_op ).{ subcondition | VAR_DECLARATION };
 
 bool_op = '||' | '&&';
 
 subcondition = /.*/;
 
-if_body = '\n'.{ /^\s*.+/ };
+if_body = { VAR_DECLARATION | COMMENT | /^\s*.+/ }*;
 
-include_stmt = '.include' '<' '.'.{ /[a-z]+/ } '>' ;
+INCLUDE_STMT = '.include' '<' '.'.{ /[a-z]+/ } '>' ;
