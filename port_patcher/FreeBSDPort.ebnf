@@ -1,4 +1,4 @@
-makefile = { declaration | comment }* ;
+makefile = { declaration | comment | if_block | include_stmt }* ;
 
 NEWLINE = '\n' ;
 
@@ -15,7 +15,7 @@ var_name = /^[A-Z0-9a-z_]+/ ;
 assignment = '=' | '+=' | '?=' | '!=' ;
 
 #var_value = '\\\n'.{ /!(\\)*/ } ;
-var_value = '\\\n'.{?/\s*[ A-Za-z":0-9_.@,=|%'${}/-]+/?} ;
+var_value = '\\\n'.{?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/?} ;
 
 target_name = /[.\-A-Za-z]+/ ;
 
@@ -24,3 +24,12 @@ newline = '\n' ;
 
 target_body = '\n'.{ /^\s+.+/ };
 
+if_block = '.if' if_condition if_body '.endif';
+
+if_condition = ( '||' | '&&' ).{ subcondition };
+
+subcondition = /.*/;
+
+if_body = '\n'.{ /^\s*.+/ };
+
+include_stmt = '.include' '<' '.'.{ /[a-z]+/ } '>' ;
