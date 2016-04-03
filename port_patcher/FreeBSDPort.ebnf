@@ -1,14 +1,15 @@
-makefile = { declaration | comment | if_block | include_stmt }* ;
+makefile = { EMPTY_LINE | declaration | COMMENT | if_block | include_stmt }* ;
 
-NEWLINE = '\n' ;
+EMPTY_LINE = /^\s*$/ ;
+#NEWLINE = '\n' ;
 
-comment = /^#.*$/ ;
+COMMENT = /\s*#.*$/ ;
 
 declaration = var_declaration | target_declaration;
 
 var_declaration = var_name assignment var_value;
 
-target_declaration = target_name colon '\n'.{ target_body };
+target_declaration = target_name ':' '\n'.{ target_body };
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
@@ -17,16 +18,19 @@ assignment = '=' | '+=' | '?=' | '!=' | ':=' ;
 #var_value = '\\\n'.{ /!(\\)*/ } ;
 var_value = '\\\n'.{?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/?} ;
 
-target_name = /^[.\-A-Za-z]+/ ;
+target_name = /^[a-z-]+/ ;
 
-colon = ':' ;
-newline = '\n' ;
+#newline = '\n' ;
 
-target_body = '\n'.{ /^\s+.+/ };
+#target_body = { COMMENT }* ;
+target_body = { shell_cmd | COMMENT }* ;
 
+shell_cmd = [ '@' ]  { var_declaration | /.*/ };
 if_block = '.if' if_condition if_body '.endif';
 
-if_condition = ( '||' | '&&' ).{ subcondition };
+if_condition = ( bool_op ).{ subcondition | var_declaration };
+
+bool_op = '||' | '&&';
 
 subcondition = /.*/;
 
