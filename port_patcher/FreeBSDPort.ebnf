@@ -9,7 +9,8 @@ DECLARATION = VAR_DECLARATION | TARGET_DECLARATION;
 
 VAR_DECLARATION = var_name { /\s/ }* assignment { /\s/ }* var_value;
 
-TARGET_DECLARATION = target_name ':' TARGET_BODY EMPTY_LINE;
+#TARGET_DECLARATION = target_name ':\n' TARGET_BODY '\n';
+TARGET_DECLARATION = target_name ':\n' TARGET_BODY;
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
@@ -24,7 +25,7 @@ target_name = /^[a-z-]+/ ;
 #newline = '\n' ;
 
 #TARGET_BODY = { COMMENT }* ;
-TARGET_BODY = { /\s+/ SHELL_CMD | COMMENT }+ ;
+TARGET_BODY = { /^\t+\S.*\\?$\n*/ | COMMENT}+ ;
 
 #SHELL_CMD = [ '@' ]  { VAR_DECLARATION };
 SHELL_CMD = [ '@' ]  { VAR_DECLARATION | /\S+$/ } [ '\\' ] ;
