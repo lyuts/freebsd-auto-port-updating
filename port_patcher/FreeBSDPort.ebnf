@@ -1,6 +1,6 @@
 MAKEFILE = { DECLARATION | COMMENT | IF_BLOCK | INCLUDE_STMT | EMPTY_LINE }* ;
 
-EMPTY_LINE = /\s*$\n/ ;
+EMPTY_LINE = /[^\n\S]*$\n/ ;
 #NEWLINE = '\n' ;
 
 COMMENT = /[^\n\S]*#.*$\n/ ;
