@@ -25,10 +25,11 @@ target_name = /^[a-z-]+/ ;
 #newline = '\n' ;
 
 #TARGET_BODY = { COMMENT }* ;
-TARGET_BODY = { /^\t+\S.*\\?$\n*/ | COMMENT}+ ;
+# when parsing target body it is assumed that an empty line can be treated as its end
+TARGET_BODY = { SHELL_CMD | COMMENT | FOR_LOOP | IF_BLOCK }+ ;
 
 #SHELL_CMD = [ '@' ]  { VAR_DECLARATION };
-SHELL_CMD = [ '@' ]  { VAR_DECLARATION | /\S+$/ } [ '\\' ] ;
+SHELL_CMD = /^\t+\S.*$\n+/ ;
 
 IF_BLOCK = '.if' if_condition if_body '.endif';
 
@@ -39,5 +40,7 @@ bool_op = '||' | '&&';
 subcondition = /.*/;
 
 if_body = { VAR_DECLARATION | COMMENT | /^\s*.+/ }*;
+
+FOR_LOOP = '.for ' /.+$\n/ TARGET_BODY '.endfor\n' ;
 
 INCLUDE_STMT = '.include' '<' '.'.{ /[a-z]+/ } '>' ;
