@@ -1,7 +1,6 @@
 MAKEFILE = { DECLARATION | COMMENT | IF_BLOCK | INCLUDE_STMT | EMPTY_LINE }* ;
 
 EMPTY_LINE = /[^\n\S]*$\n/ ;
-#NEWLINE = '\n' ;
 
 COMMENT = /[^\n\S]*#.*$\n/ ;
 
@@ -9,26 +8,19 @@ DECLARATION = VAR_DECLARATION | TARGET_DECLARATION;
 
 VAR_DECLARATION = var_name { /\s/ }* assignment { /\s/ }* var_value;
 
-#TARGET_DECLARATION = target_name ':\n' TARGET_BODY '\n';
 TARGET_DECLARATION = target_name ':\n' TARGET_BODY;
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
 assignment = '=' | '+=' | '?=' | '!=' | ':=' ;
 
-#var_value = '\\\n'.{ /!(\\)*/ } ;
-#var_value = { ?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/? [ '\\' ]}* ;
 var_value = '\\'.{ ?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/? } ;
 
 target_name = /^[a-z-]+/ ;
 
-#newline = '\n' ;
-
-#TARGET_BODY = { COMMENT }* ;
 # when parsing target body it is assumed that an empty line can be treated as its end
 TARGET_BODY = { SHELL_CMD | COMMENT | FOR_LOOP | IF_BLOCK }+ ;
 
-#SHELL_CMD = [ '@' ]  { VAR_DECLARATION };
 SHELL_CMD = /^\t+\S.*$\n+/ ;
 
 IF_BLOCK = '.if' if_condition if_body '.endif';
