@@ -26,7 +26,13 @@ class PortPatcher(object):
 
         print 'Old version', old_version
         print 'New version', new_version
-        print 'Is minor update?', old_version < new_version
+
+        minor_update = old_version < new_version
+
+        print 'Is minor update?', minor_update
+
+        if not minor_update:
+            return
 
         # make backup of a makefile
         # update version in parsed ast
