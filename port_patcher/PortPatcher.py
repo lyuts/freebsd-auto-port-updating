@@ -1,6 +1,19 @@
 from distutils.version import LooseVersion, StrictVersion
 from FreeBSDPortParser import FreeBSDPortParser
 import argparse
+import grako
+
+def write_elements(file, elems):
+    for elem in elems:
+        if isinstance(elem, grako.ast.AST):
+            write_elements(file, elem.values())
+        elif isinstance(elem, grako.contexts.Closure):
+            write_elements(file, elem)
+        elif isinstance(elem, list):
+            write_elements(file, elem)
+        else:
+            print elem,
+            file.write(elem)
 
 class PortPatcher(object):
     def __init__(self):
@@ -17,12 +30,12 @@ class PortPatcher(object):
         # check if it is a minor update
         new_version = LooseVersion(version)
 
-        version_ast_list = filter(lambda x:x.varname == 'PORTVERSION', makefile)
+        version_ast_list = filter(lambda x:x[0] == 'PORTVERSION', makefile)
 
         assert len(version_ast_list) == 1, 'Only one PORTVERSION is allowed in Makefile'
 
         version_ast = version_ast_list[0]
-        old_version = LooseVersion(version_ast.varvalue[0])
+        old_version = LooseVersion(version_ast[-1][0])
 
         print 'Old version', old_version
         print 'New version', new_version
@@ -35,8 +48,17 @@ class PortPatcher(object):
             return
 
         # make backup of a makefile
+
         # update version in parsed ast
+        version_ast[-1][0] = version
+
         # save makefile
+        new_makefile = open('Makefile.new', 'w')
+
+        for ast in makefile:
+            write_elements(new_makefile, ast)
+
+        new_makefile.close()
 
 def main():
     argparser = argparse.ArgumentParser(description='FreeBSD Port Patcher')
