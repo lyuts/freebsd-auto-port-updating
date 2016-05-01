@@ -1,6 +1,6 @@
+from distutils.version import LooseVersion, StrictVersion
 from FreeBSDPortParser import FreeBSDPortParser
 import argparse
-import semantic_version
 
 class PortPatcher(object):
     def __init__(self):
@@ -11,10 +11,22 @@ class PortPatcher(object):
         with open(makefile) as f:
             makefile_text = f.read()
 
-        makefile_parser = FreeBSDPortParser(makefile_text)
+        makefile_parser = FreeBSDPortParser(comments_re='', eol_comments='')
+        makefile = makefile_parser.parse(makefile_text, rule_name='MAKEFILE')
 
         # check if it is a minor update
-        new_version = semantic_version.Version(version)
+        new_version = LooseVersion(version)
+
+        version_ast_list = filter(lambda x:x.varname == 'PORTVERSION', makefile)
+
+        assert len(version_ast_list) == 1, 'Only one PORTVERSION is allowed in Makefile'
+
+        version_ast = version_ast_list[0]
+        old_version = LooseVersion(version_ast.varvalue[0])
+
+        print 'Old version', old_version
+        print 'New version', new_version
+        print 'Is minor update?', old_version < new_version
 
         # make backup of a makefile
         # update version in parsed ast
