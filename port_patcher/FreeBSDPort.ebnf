@@ -1,14 +1,14 @@
 MAKEFILE = { DECLARATION | COMMENT | IF_BLOCK | INCLUDE_STMT | EMPTY_LINE }* ;
 
-EMPTY_LINE = /[^\n\S]*$\n/ ;
+EMPTY_LINE = blank_line:/[^\n\S]*$\n/ ;
 
-COMMENT = /[^\n\S]*#.*$\n/ ;
+COMMENT = comment:/[^\n\S]*#.*$\n/ ;
 
 DECLARATION = VAR_DECLARATION | TARGET_DECLARATION;
 
-VAR_DECLARATION = var_name { /\s/ }* assignment { /\s/ }* var_value;
+VAR_DECLARATION = varname:var_name { /\s/ }* varassignment:assignment { /\s/ }* varvalue:var_value;
 
-TARGET_DECLARATION = target_name ':\n' TARGET_BODY;
+TARGET_DECLARATION = target_name:target_name ':\n' target_body:TARGET_BODY;
 
 var_name = /^[A-Z0-9a-z_]+/ ;
 
@@ -19,11 +19,11 @@ var_value = '\\'.{ ?/\s*[ A-Za-z":0-9_.@,=|%'${}()/-]+/? } ;
 target_name = /^[a-z-]+/ ;
 
 # when parsing target body it is assumed that an empty line can be treated as its end
-TARGET_BODY = { SHELL_CMD | COMMENT | FOR_LOOP | IF_BLOCK }+ ;
+TARGET_BODY = target:({ SHELL_CMD | COMMENT | FOR_LOOP | IF_BLOCK }+ );
 
 SHELL_CMD = /^\t+\S.*$\n+/ ;
 
-IF_BLOCK = '.if' if_condition if_body '.endif';
+IF_BLOCK = ifblock:('.if' if_condition if_body '.endif');
 
 if_condition = ( bool_op ).{ subcondition | VAR_DECLARATION };
 
@@ -35,4 +35,4 @@ if_body = { VAR_DECLARATION | COMMENT | /^\s*.+/ }*;
 
 FOR_LOOP = '.for ' /.+$\n/ TARGET_BODY '.endfor\n' ;
 
-INCLUDE_STMT = '.include' '<' '.'.{ /[a-z]+/ } '>' ;
+INCLUDE_STMT = include:('.include' '<' '.'.{ /[a-z]+/ } '>' );
